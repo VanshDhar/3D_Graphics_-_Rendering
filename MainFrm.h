@@ -1,5 +1,6 @@
 // MainFrm.h : interface of the CMainFrame class
 //
+/////////////////////////////////////////////////////////////////////////////
 
 #if !defined(AFX_MAINFRM_H__0BC69CCC_EE7A_46A6_93F2_3B8CCCA8FC6C__INCLUDED_)
 #define AFX_MAINFRM_H__0BC69CCC_EE7A_46A6_93F2_3B8CCCA8FC6C__INCLUDED_
@@ -49,7 +50,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 };
 
-
+/////////////////////////////////////////////////////////////////////////////
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.

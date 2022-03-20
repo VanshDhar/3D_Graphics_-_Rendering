@@ -1,5 +1,6 @@
 // CS580HWDoc.h : interface of the CCS580HWDoc class
-
+//
+/////////////////////////////////////////////////////////////////////////////
 
 #if !defined(AFX_CS580HWDOC_H__C28F4603_B299_4DB1_9E4D_835F8AA79918__INCLUDED_)
 #define AFX_CS580HWDOC_H__C28F4603_B299_4DB1_9E4D_835F8AA79918__INCLUDED_
@@ -48,7 +49,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 };
 
-
+/////////////////////////////////////////////////////////////////////////////
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.

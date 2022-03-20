@@ -1,4 +1,4 @@
-// CS580HW.cpp : Defines the class behaviors for the application
+// CS580HW.cpp : Defines the class behaviors for the application.
 //
 
 #include "stdafx.h"
@@ -14,22 +14,21 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-
+/////////////////////////////////////////////////////////////////////////////
 // CCS580HWApp
 
 BEGIN_MESSAGE_MAP(CCS580HWApp, CWinApp)
 	//{{AFX_MSG_MAP(CCS580HWApp)
 	ON_COMMAND(ID_APP_ABOUT, OnAppAbout)
-	// NOTE - the ClassWizard will add and remove mapping macros here.
-	//    DO NOT EDIT what you see in these blocks of generated code!
+		// NOTE - the ClassWizard will add and remove mapping macros here.
+		//    DO NOT EDIT what you see in these blocks of generated code!
 	//}}AFX_MSG_MAP
 	// Standard file based document commands
 	ON_COMMAND(ID_FILE_NEW, CWinApp::OnFileNew)
 	ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
 END_MESSAGE_MAP()
 
-
-
+/////////////////////////////////////////////////////////////////////////////
 // CCS580HWApp construction
 
 CCS580HWApp::CCS580HWApp()
@@ -38,10 +37,12 @@ CCS580HWApp::CCS580HWApp()
 	// Place all significant initialization in InitInstance
 }
 
+/////////////////////////////////////////////////////////////////////////////
 // The one and only CCS580HWApp object
 
 CCS580HWApp theApp;
 
+/////////////////////////////////////////////////////////////////////////////
 // CCS580HWApp initialization
 
 BOOL CCS580HWApp::InitInstance()
@@ -93,7 +94,7 @@ BOOL CCS580HWApp::InitInstance()
 }
 
 
-
+/////////////////////////////////////////////////////////////////////////////
 // CAboutDlg dialog used for App About
 
 class CAboutDlg : public CDialog
@@ -146,6 +147,6 @@ void CCS580HWApp::OnAppAbout()
 	aboutDlg.DoModal();
 }
 
-
+/////////////////////////////////////////////////////////////////////////////
 // CCS580HWApp message handlers
 

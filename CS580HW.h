@@ -14,10 +14,10 @@
 
 #include "resource.h"       // main symbols
 
-
+/////////////////////////////////////////////////////////////////////////////
 // CCS580HWApp:
 // See CS580HW.cpp for the implementation of this class
-
+//
 
 class CCS580HWApp : public CWinApp
 {
@@ -40,6 +40,8 @@ public:
 	DECLARE_MESSAGE_MAP()
 };
 
+
+/////////////////////////////////////////////////////////////////////////////
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.

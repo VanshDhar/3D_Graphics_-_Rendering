@@ -1,6 +1,6 @@
 // CS580HWView.h : interface of the CCS580HWView class
-
-
+//
+/////////////////////////////////////////////////////////////////////////////
 
 #if !defined(AFX_CS580HWVIEW_H__F4D29CBB_F832_426E_9878_3B454FBDB8F6__INCLUDED_)
 #define AFX_CS580HWVIEW_H__F4D29CBB_F832_426E_9878_3B454FBDB8F6__INCLUDED_
@@ -10,6 +10,7 @@
 #endif // _MSC_VER > 1000
 
 #include "Application.h"
+#include "Gz.h"
 
 class CCS580HWView : public CView
 {
@@ -32,7 +33,7 @@ public:
 	public:
 	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
-	protected:
+	virtual void OnInitialUpdate();
 	//}}AFX_VIRTUAL
 
 // Implementation
@@ -49,6 +50,9 @@ protected:
 protected:
 	//{{AFX_MSG(CCS580HWView)
 	afx_msg void OnRender();
+	afx_msg void OnRotate();
+	afx_msg void OnTranslate();
+	afx_msg void OnScale();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };
@@ -58,7 +62,7 @@ inline CCS580HWDoc* CCS580HWView::GetDocument()
    { return (CCS580HWDoc*)m_pDocument; }
 #endif
 
-///////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.

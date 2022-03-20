@@ -6,10 +6,12 @@
 
 #include "CS580HWDoc.h"
 #include "CS580HWView.h"
+#include "RotateDlg.h"
+#include "TranslateDlg.h"
+#include "ScaleDlg.h"
 
-#include "Gz.h"
 #include "rend.h"
-#include "Application1.h"
+#include "Application5.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -25,6 +27,9 @@ IMPLEMENT_DYNCREATE(CCS580HWView, CView)
 BEGIN_MESSAGE_MAP(CCS580HWView, CView)
 	//{{AFX_MSG_MAP(CCS580HWView)
 	ON_COMMAND(IDM_RENDER, OnRender)
+	ON_COMMAND(IDM_ROTATE, OnRotate)
+	ON_COMMAND(IDM_TRANSLATE, OnTranslate)
+	ON_COMMAND(IDM_SCALE, OnScale)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -35,11 +40,14 @@ CCS580HWView::CCS580HWView()
 {
 	// TODO: add construction code here
 	m_pApplication = NULL;
-
 }
 
 CCS580HWView::~CCS580HWView()
 {
+	if(m_pApplication != NULL)
+	{
+		delete m_pApplication;
+	}
 }
 
 BOOL CCS580HWView::PreCreateWindow(CREATESTRUCT& cs)
@@ -92,9 +100,11 @@ void CCS580HWView::OnRender()
 
 	// Call renderer 
 
-	// Application 1
-	m_pApplication = new Application1;
-	m_pApplication->Render();
+	// Application 5
+	if(m_pApplication != NULL)
+		((Application5 *)m_pApplication)->Render();
+	else 
+		AfxMessageBox("Application was not allocated\n");
 
 	// Set window size
 	CRect clientRect, windowRect;
@@ -113,7 +123,7 @@ void CCS580HWView::OnRender()
 
 void CCS580HWView::DrawFrameBuffer(CDC *pDC)
 {
-	if(m_pApplication->m_pRender->framebuffer == NULL)
+	if(m_pApplication->m_pFrameBuffer == NULL)
     {
         return;
     }
@@ -146,7 +156,7 @@ void CCS580HWView::DrawFrameBuffer(CDC *pDC)
 	GetDIBits(hdc, m_bitmap, 0, 0, 0, binfo, colors);
     binfo->bmiHeader.biBitCount = 24;
     binfo->bmiHeader.biHeight = -abs(binfo->bmiHeader.biHeight);
-    SetDIBits(hdc, m_bitmap, 0, m_pApplication->m_nHeight, m_pApplication->m_pRender->framebuffer , binfo, colors);
+    SetDIBits(hdc, m_bitmap, 0, m_pApplication->m_nHeight, m_pApplication->m_pFrameBuffer, binfo, colors);
 
     ::SetStretchBltMode(pDC->m_hDC, COLORONCOLOR);
     CRect client;
@@ -154,9 +164,159 @@ void CCS580HWView::DrawFrameBuffer(CDC *pDC)
     ::BitBlt(pDC->m_hDC, 0, 0, m_pApplication->m_nWidth, m_pApplication->m_nHeight, 
         hdc, 0, 0, SRCCOPY);
     ::DeleteDC(hdc);
-    if (m_pApplication)
+    DeleteObject(m_bitmap); 
+}
+
+void CCS580HWView::OnInitialUpdate() 
+{
+	CView::OnInitialUpdate();
+	
+	// TODO: Add your specialized code here and/or call the base class
+
+	// Assign Application 5
+	if(m_pApplication == NULL)
 	{
-		delete m_pApplication;
-		m_pApplication = NULL;
+		m_pApplication = new Application5;
+	}
+	
+	// Initialize and begin renderer
+	((Application5 *)m_pApplication)->Initialize();
+}
+
+// Callback function for rotation  
+void CCS580HWView::OnRotate() 
+{
+	// TODO: Add your command handler code here
+	CRotateDlg dlg;
+	GzInput* input;
+	GzMatrix	rotMat = 
+	{ 
+		1.0,	0.0,	0.0,	0.0, 
+		0.0,	1.0,	0.0,	0.0, 
+		0.0,	0.0,	1.0,	0.0, 
+		0.0,	0.0,	0.0,	1.0 
+	};
+
+
+	if(m_pApplication == NULL) return;
+
+	input = m_pApplication->m_pUserInput;
+	if(input == NULL) return;
+
+	// Initialize
+	input->rotation[0] = input->rotation[1] = input->rotation[2] = 0;
+	dlg.Initialize(input->rotation[0], input->rotation[1], input->rotation[2]);
+
+	if(dlg.DoModal() == IDOK)
+	{
+		// Update input rotation value
+		input->rotation[dlg.m_nAxis] = dlg.m_fRot;
+				
+		//  Create Rotation Matrix 
+		switch(dlg.m_nAxis)
+		{
+		case 0 :
+			// Create matrix for Rot X
+			m_pApplication->m_pRender[AAKERNEL_SIZE]->GzRotXMat(input->rotation[0], rotMat);
+			break;
+		case 1:
+			// Create matrix for Rot Y
+			m_pApplication->m_pRender[AAKERNEL_SIZE]->GzRotYMat(input->rotation[1], rotMat);
+			break;
+		case 2:
+			// Create matrix for Rot Z
+			m_pApplication->m_pRender[AAKERNEL_SIZE]->GzRotZMat(input->rotation[2], rotMat);
+			break;
+		}
+
+		// Accumulate matrix
+		int k = 0;
+		while (k <= AAKERNEL_SIZE) {
+			m_pApplication->m_pRender[k]->GzPushMatrix(rotMat);
+			k++;
+		}
+		 
+	}
+}
+
+// Callback function for Translation
+void CCS580HWView::OnTranslate() 
+{
+	// TODO: Add your command handler code here
+	CTranslateDlg dlg;
+	GzInput* input;
+	GzMatrix	trxMat = 
+	{ 
+		1.0,	0.0,	0.0,	0.0, 
+		0.0,	1.0,	0.0,	0.0, 
+		0.0,	0.0,	1.0,	0.0, 
+		0.0,	0.0,	0.0,	1.0 
+	};
+
+
+	if(m_pApplication == NULL) return;
+
+	input = m_pApplication->m_pUserInput;
+	if(input == NULL) return;
+
+	// Initialize
+	input->translation[0] = input->translation[1] = input->translation[2] = 0;
+	dlg.Initialize(input->translation[0], input->translation[1], input->translation[2]);
+
+	if(dlg.DoModal() == IDOK)
+	{
+		// Update input translation value
+		input->translation[0] = dlg.m_fTx; input->translation[1] = dlg.m_fTy; input->translation[2] = dlg.m_fTz;
+
+		//  Create Translation Matrix
+		m_pApplication->m_pRender[AAKERNEL_SIZE]->GzTrxMat(input->translation, trxMat);
+
+		// Accumulate matrix
+		int k = 0;
+		while (k <= AAKERNEL_SIZE) {
+			m_pApplication->m_pRender[k]->GzPushMatrix(trxMat);
+			k++;
+		}
+	}
+}
+
+// Callback function for Scaling
+void CCS580HWView::OnScale() 
+{
+	// TODO: Add your command handler code here
+	CScaleDlg dlg;
+	GzInput* input;
+	GzMatrix scaleMat = 
+	{ 
+		1.0,	0.0,	0.0,	0.0, 
+		0.0,	1.0,	0.0,	0.0, 
+		0.0,	0.0,	1.0,	0.0, 
+		0.0,	0.0,	0.0,	1.0 
+	};
+
+
+	if(m_pApplication == NULL) return;
+
+	input = m_pApplication->m_pUserInput;
+	if(input == NULL) return;
+
+	// Initialize
+	input->scale[0] = input->scale[1] = input->scale[2] = 1;
+	dlg.Initialize(input->scale[0], input->scale[1], input->scale[2]);
+
+	if(dlg.DoModal() == IDOK)
+	{
+		// Update input scale value
+		input->scale[0] = dlg.m_fSx; input->scale[1] = dlg.m_fSy; input->scale[2] = dlg.m_fSz;
+
+		//  Create Scaling Matrix
+		m_pApplication->m_pRender[AAKERNEL_SIZE]->GzScaleMat(input->scale, scaleMat);
+
+		// Accumulate matrix
+		int k = 0;
+		while (k <= AAKERNEL_SIZE) {
+			m_pApplication->m_pRender[k]->GzPushMatrix(scaleMat);
+			k++;
+		}
 	}
 }

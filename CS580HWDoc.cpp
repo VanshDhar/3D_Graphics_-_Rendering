@@ -12,7 +12,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-
+/////////////////////////////////////////////////////////////////////////////
 // CCS580HWDoc
 
 IMPLEMENT_DYNCREATE(CCS580HWDoc, CDocument)
@@ -24,7 +24,7 @@ BEGIN_MESSAGE_MAP(CCS580HWDoc, CDocument)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
-
+/////////////////////////////////////////////////////////////////////////////
 // CCS580HWDoc construction/destruction
 
 CCS580HWDoc::CCS580HWDoc()
@@ -50,6 +50,7 @@ BOOL CCS580HWDoc::OnNewDocument()
 
 
 
+/////////////////////////////////////////////////////////////////////////////
 // CCS580HWDoc serialization
 
 void CCS580HWDoc::Serialize(CArchive& ar)
@@ -64,7 +65,7 @@ void CCS580HWDoc::Serialize(CArchive& ar)
 	}
 }
 
-
+/////////////////////////////////////////////////////////////////////////////
 // CCS580HWDoc diagnostics
 
 #ifdef _DEBUG
@@ -79,5 +80,5 @@ void CCS580HWDoc::Dump(CDumpContext& dc) const
 }
 #endif //_DEBUG
 
-
+/////////////////////////////////////////////////////////////////////////////
 // CCS580HWDoc commands
